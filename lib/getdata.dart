@@ -1,9 +1,7 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:userapidata/modelclass.dart';
-
 class Getdata extends StatefulWidget{
   @override
   State<StatefulWidget> createState() {
@@ -19,6 +17,8 @@ class _GetdateState extends State<Getdata>{
   String Email = "";
   String picture = "";
   String username = "";
+  Datatest a = Datatest();
+  bool apidataload = true;
   @override
   void initState() {
     // TODO: implement initState
@@ -40,7 +40,7 @@ class _GetdateState extends State<Getdata>{
             ),),
           ),
           body: Center(
-            child: Container(
+            child: apidataload?CircularProgressIndicator():Container(
               height: MediaQuery.of(context).size.height*0.8,
               width:  MediaQuery.of(context).size.width*0.9,
               decoration: BoxDecoration(
@@ -52,7 +52,7 @@ class _GetdateState extends State<Getdata>{
                 children: [
                   CircleAvatar(
                     radius: 50,
-                    backgroundImage: NetworkImage(picture),
+                    backgroundImage: NetworkImage(a.results[0].picture!.large),
                   ),
                  Row(
                    children: [
@@ -73,7 +73,7 @@ class _GetdateState extends State<Getdata>{
                          height:  MediaQuery.of(context).size.height*0.06,
                          width:  MediaQuery.of(context).size.height*0.25,
                          alignment: Alignment.centerLeft,
-                         child: Text(name,style: TextStyle(
+                         child: Text("${a.results[0].name!.title} ${a.results[0].name!.first} ${a.results[0].name!.last}",style: TextStyle(
                              fontSize: 17
                          ),),
                          decoration: BoxDecoration(
@@ -105,7 +105,7 @@ class _GetdateState extends State<Getdata>{
                           height:  MediaQuery.of(context).size.height*0.06,
                           width:  MediaQuery.of(context).size.height*0.25,
                           alignment: Alignment.centerLeft,
-                          child: Text(username,style: TextStyle(
+                          child: Text(a.results[0].login!.username,style: TextStyle(
                               fontSize: 17
                           ),),
                           decoration: BoxDecoration(
@@ -137,7 +137,7 @@ class _GetdateState extends State<Getdata>{
                           height:  MediaQuery.of(context).size.height*0.06,
                           width:  MediaQuery.of(context).size.height*0.25,
                           alignment: Alignment.centerLeft,
-                          child: Text(gender,style: TextStyle(
+                          child: Text(a.results[0].gender,style: TextStyle(
                               fontSize: 17
                           ),),
                           decoration: BoxDecoration(
@@ -169,7 +169,7 @@ class _GetdateState extends State<Getdata>{
                           height:  MediaQuery.of(context).size.height*0.06,
                           width:  MediaQuery.of(context).size.height*0.25,
                           alignment: Alignment.centerLeft,
-                          child: Text(DOB,style: TextStyle(
+                          child: Text(a.results[0].phone,style: TextStyle(
                               fontSize: 18
                           ),),
                           decoration: BoxDecoration(
@@ -201,7 +201,7 @@ class _GetdateState extends State<Getdata>{
                           height:  MediaQuery.of(context).size.height*0.06,
                           width:  MediaQuery.of(context).size.height*0.25,
                           alignment: Alignment.centerLeft,
-                          child: Text(Email,style: TextStyle(
+                          child: Text(a.results[0].email,style: TextStyle(
                               fontSize: 17
                           ),),
                           decoration: BoxDecoration(
@@ -226,19 +226,16 @@ class _GetdateState extends State<Getdata>{
           ),
         ));
   }
-  Future<void> fetchdata() async{
+  Future<Datatest> fetchdata() async{
     final response = await http.get(Uri(host: "randomuser.me",scheme: "https",path: "api"));
     final Map<String, dynamic> data = jsonDecode(response.body);
-    // Datatest xyz = Datatest.fromjson(data);
+    a = Datatest.fromjson(data);
+    print(data);
+    print(a.results[0].name!.first);
     setState(() {
-      name='${data['results'][0]['name']['title']} ${data['results'][0]['name']['first']} ${data['results'][0]['name']['last']}';
-      DOB = '${data['results'][0]['cell']}';
-      gender = '${data['results'][0]['gender']}';
-      Email = '${data['results'][0]['email']}';
-      picture = '${data['results'][0]['picture']['large']}';
-      username = '${data['results'][0]['login']['username']}';
-      print(DOB);
+      apidataload = false;
     });
-
+    return a;
   }
+
 }

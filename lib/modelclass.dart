@@ -32,15 +32,27 @@ class Info{
 }
 class Result {
  String gender = "";
+ String phone = "";
+ String email = "";
  Name? name;
  Location? location;
+ Picture? picture;
+ Login? login;
  Result({this.gender = "",
+  this.email = "",
   this.location,
+  this.picture,
+  this.phone = "",
+  this.login,
  this.name});
  factory Result.fromjson(Map<String, dynamic> jsonData){
   return Result(
   gender: jsonData['gender'],
+   email: jsonData['email'],
    name: jsonData['name'] != null ? Name.fromjason(jsonData['name']):null,
+   picture: jsonData['picture'] != null ? Picture.fromjson(jsonData['picture']):null,
+   phone: jsonData['phone'],
+   login: jsonData['login'] != null ? Login.fromjson(jsonData['login']):null,
    location: jsonData['location'] != null ? Location.fromjson(jsonData['location']):null,
   );
  }
@@ -61,7 +73,9 @@ class Name {
  this.first = ""});
  factory Name.fromjason(Map<String, dynamic> jsonDate){
   return Name(
-   title: jsonDate['title']
+   title: jsonDate['title'],
+   first: jsonDate['first'],
+      last: jsonDate['last']
   );
  }
 }
@@ -98,6 +112,28 @@ class Coordinates{
   return Coordinates(
    latitude: jsonData['latitude'],
    longitude: jsonData['longitude'],
+  );
+ }
+}
+class Login {
+ String username = "";
+ Login({
+  this.username = "",
+});
+ factory Login.fromjson(Map<String, dynamic>jsonData){
+  return Login(
+  username: jsonData['username']
+  );
+ }
+}
+class Picture {
+ String large = "";
+ Picture({
+  this.large = "",
+});
+ factory Picture.fromjson(Map<String, dynamic> jsonData){
+  return Picture(
+   large: jsonData['large']
   );
  }
 }
